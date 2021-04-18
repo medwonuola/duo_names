@@ -1,12 +1,17 @@
 class HomeEvent {}
 
-class FetchData extends HomeEvent {
-  final bool newData;
+class FetchDataFromFile extends HomeEvent {
+  @override
+  String toString() {
+    return "Fetched from saved data";
+  }
+}
 
-  FetchData(this.newData);
+class FetchData extends HomeEvent {
+  FetchData();
 
   @override
   String toString() {
-    return newData ? "New data" : "Fetched from saved data";
+    return "New data";
   }
 }

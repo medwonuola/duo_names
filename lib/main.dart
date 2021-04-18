@@ -1,6 +1,6 @@
-import 'package:duo_names/home.dart';
-import 'package:duo_names/model.dart';
 import 'package:flutter/material.dart';
+
+import 'home/home.dart';
 
 void main() => runApp(DuoNameApp());
 
@@ -9,10 +9,7 @@ class DuoNameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Duo Name',
-      home: DuoName(
-        names: Names(),
-        child: Home(),
-      ),
+      home: Home(),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'home_state.dart';
-
+import '../services.dart';
 import 'home_event.dart';
 
 class HomeModel {
@@ -12,13 +12,35 @@ class HomeModel {
   //
   Stream<HomeState> get homeState => _stateController.stream;
 
-  void dispatch(HomeEvent event) {
-    if (event is FetchData) {}
+  void dispatch(HomeEvent event) async {
+    if (event is FetchData) {
+      await _getData();
+    }
+
+    if (event is FetchDataFromFile) {
+      await _loadData();
+    }
   }
 
   //
 
-  Future _loadData() async {}
+  Future _loadData() async {
+    _stateController.add(BusyState());
 
-  Future _getData() async {}
+    try {
+      var file = await loadNames();
+
+      _names = file[0];
+      _favorites = file[1];
+
+      _stateController.add(DataFetchedState(data: _names));
+    } catch (exception) {
+      _stateController.addError(
+          "An error occurred while fetching the data. Please try again refresh the page.");
+    }
+  }
+
+  Future<void> _getData() async {
+    _names = await getNames();
+  }
 }

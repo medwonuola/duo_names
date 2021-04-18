@@ -20,9 +20,19 @@ class HomeModel {
     if (event is FetchDataFromFile) {
       await _loadData();
     }
+
+    if (event is AddFavorite) {
+      addFavorite(event.name);
+      saveFavorites(_favorites);
+    }
   }
 
   //
+  //
+
+  void addFavorite(String name) {
+    _favorites.add(name);
+  }
 
   Future _loadData() async {
     _stateController.add(BusyState());
@@ -33,7 +43,8 @@ class HomeModel {
       _names = file[0];
       _favorites = file[1];
 
-      _stateController.add(DataFetchedState(data: _names));
+      _stateController
+          .add(DataFetchedState(data: _names, favorites: _favorites));
     } catch (exception) {
       _stateController.addError(
           "An error occurred while fetching the data. Please try again refresh the page.");
@@ -41,6 +52,10 @@ class HomeModel {
   }
 
   Future<void> _getData() async {
+    _stateController.add(BusyState());
+    await Future.delayed(Duration(seconds: 2));
     _names = await getNames();
+
+    _stateController.add(DataFetchedState(data: _names, favorites: _favorites));
   }
 }

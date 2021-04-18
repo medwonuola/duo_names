@@ -25,13 +25,18 @@ class HomeModel {
       addFavorite(event.name);
       saveFavorites(_favorites);
     }
+
+    if (event is UpdateFavorite) {
+      _stateController.add(BusyState());
+      await _loadData();
+    }
   }
 
   //
   //
 
   void addFavorite(String name) {
-    _favorites.add(name);
+    !_favorites.contains(name) ? _favorites.add(name) : _favorites.remove(name);
   }
 
   Future _loadData() async {

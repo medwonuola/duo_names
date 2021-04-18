@@ -21,3 +21,8 @@ Future<List<List<String>>> loadNames() async {
 
   return [names, favorites];
 }
+
+Future<void> saveFavorites(List<String> favorites) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setStringList('favorites', favorites);
+}

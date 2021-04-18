@@ -15,3 +15,11 @@ class FetchData extends HomeEvent {
     return "New data";
   }
 }
+
+class AddFavorite extends HomeEvent {
+  final String name;
+
+  AddFavorite(this.name);
+}
+
+class UpdateFavorite extends HomeEvent {}

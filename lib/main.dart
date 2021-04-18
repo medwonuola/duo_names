@@ -9,6 +9,7 @@ class DuoNameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Duo Name',
+      theme: ThemeData.dark(),
       home: Home(),
     );
   }

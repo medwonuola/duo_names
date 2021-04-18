@@ -1,3 +1,4 @@
+import 'package:duo_names/favorites/favorite.dart';
 import 'package:duo_names/home/home_event.dart';
 import 'package:flutter/material.dart';
 import '../shared_ui.dart';
@@ -26,7 +27,13 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             icon: Icon(Icons.favorite_border),
-            onPressed: () {},
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => Favorites()));
+              model.dispatch(UpdateFavorite());
+            },
           )
         ],
       ),
@@ -41,17 +48,26 @@ class _HomeState extends State<Home> {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (homeState is DataFetchedState) {
-            if (!homeState.hasData) {
-              return InfoMessage(
-                  message:
-                      "No data to display for your account. Add something and check back.");
-            }
-          }
-
           return RefreshIndicator(
               child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) => ItemUI(),
+                  itemBuilder: (BuildContext context, int index) {
+                    String _name = homeState.data[index];
+                    bool isFav = homeState.favorites.contains(_name);
+
+                    return ItemUI(
+                      name: _name,
+                      favorites: homeState.favorites,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        model.dispatch(AddFavorite(_name));
+                        setState(() {});
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: !isFav
+                                ? Text(_name + " added")
+                                : Text(_name + " removed")));
+                      },
+                    );
+                  },
                   itemCount: homeState.data.length,
                   separatorBuilder: (BuildContext context, int index) =>
                       Divider(

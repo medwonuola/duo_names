@@ -8,22 +8,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Names namesProvider;
-
-  void fav() async {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => Favorites()));
-  }
+  Names namesProvider = Names();
 
   @override
   Widget build(BuildContext context) {
-    namesProvider = DuoName.of(context).names;
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Name Generator"),
         actions: [
-          IconButton(icon: Icon(Icons.favorite_outlined), onPressed: fav)
+          IconButton(
+              icon: Icon(Icons.favorite_outlined),
+              onPressed: () async{
+                Names names = await
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => Favorites(names: namesProvider,)));
+                setState(() {
+                  namesProvider = names;
+                });
+              })
         ],
       ),
       body: namesProvider.names == null

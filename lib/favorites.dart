@@ -1,39 +1,59 @@
+import 'package:duo_names/home.dart';
 import 'package:flutter/material.dart';
 
+import 'model.dart';
+
 class Favorites extends StatefulWidget {
+  final Names names;
+
+  const Favorites({Key key, this.names}) : super(key: key);
+
   @override
   _FavoritesState createState() => _FavoritesState();
 }
 
 class _FavoritesState extends State<Favorites> {
-  List<String> favorites;
+  Names namesProvider;
 
+  @override
+  void initState() {
+    namesProvider = widget.names;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final _emptyFavoritesMessage = Center(
         child: Text(
-      "You have no name in favorites. Add names and check back later.",
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyText1,
-    ));
+          "You have no name in favorites. Add names and check back later.",
+          textAlign: TextAlign.center,
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyText1,
+        ));
 
     return Scaffold(
-      appBar: AppBar(),
-      body: favorites.isEmpty
+      appBar: AppBar(
+        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
+          Navigator.pop(context, namesProvider);
+        }),
+      ),
+      body: namesProvider.favorites.isEmpty
           ? _emptyFavoritesMessage
           : ListView.separated(
-              itemCount: favorites.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  _itemUI(index, favorites),
-              separatorBuilder: (BuildContext context, int index) => Divider(
-                    color: Colors.black,
-                  )),
+          itemCount: namesProvider.favorites.length,
+          itemBuilder: (BuildContext context, int index) =>
+              _itemUI(index, namesProvider.favorites),
+          separatorBuilder: (BuildContext context, int index) =>
+              Divider(
+                color: Colors.black,
+              )),
     );
   }
 
-  _itemUI(int index, List builder) {
-    String _item = builder[index];
+  _itemUI(int index, List favorites) {
+    String _item = favorites[index];
     return ListTile(
       title: Text(_item),
       trailing: IconButton(
@@ -44,7 +64,9 @@ class _FavoritesState extends State<Favorites> {
             color: favorites.contains(_item) ? Colors.red : Colors.grey,
           ),
           onPressed: () {
-            setState(() {});
+            setState(() {
+              namesProvider.addFavorites(_item);
+            });
           }),
     );
   }
